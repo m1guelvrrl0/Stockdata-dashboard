@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "rt-stockdata-dashboard"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pandas = "^0.25.3"
+dash = "^1.7"
+sqlalchemy = "^1.3"
+pandas_datareader = "^0.8.1"
+modin = "^0.6.3"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.3"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
