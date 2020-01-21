@@ -4,39 +4,39 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-import sqlite3
-from sqlalchemy import create_engine
 import pandas_datareader.data as web
+from sqlalchemy.types import DateTime, FLOAT
+import sqlite3
+import sqlalchemy
 from datetime import datetime
-import modin.pandas as pd
+import pandas as pd
+from sqlalchemy.types import DateTime
+from utils import get_tickers
 
 app = dash.Dash(__name__)
-engine = create_engine('sqlite:///data.db')
 
+engine = sqlalchemy.create_engine("sqlite:///db.sqlite")
 nsdq = pd.read_csv('tickers.csv')
 nsdq.set_index('Symbol', inplace=True)
 options = []
-
 for tic in nsdq.index:
+    options.append({'label':'{} {}'.format(tic,nsdq.loc[tic]['Name']), 'value':tic})
 
-    mydict = {}
-    mydict['label'] = nsdq.loc[tic]['Name'] + ' ' + tic
-    mydict['value'] = tic
-    options.append(mydict)
 
 app.layout = html.Div([
+    
     html.H1('Stock Ticker Dashboard'),
-    html.Div([
-        html.H3('Enter a stock symbol:', style ={
-            'paddingRight' : '30px'
-        } ),
-        dcc.Dropdown(id='my_stock_picker',
+    html.Div(children=[
+        html.H3('Enter a stock symbol:'),
+        dcc.Dropdown(
+              className='stock-picker',
+              id='my_stock_picker',
               options= options,
               value=['AAPL'],
               multi=True,
-              style={'fontSize' : 24, 'width' : 75})
-              ],
-              style = {'display': 'inline-block', 'verticalAlign': 'top', 'width': '30px'}),
+              )
+              ]),
+    html.Div(className='date-picker', children=[
         html.Div([html.H3('Select a start and end date:'), 
                  dcc.DatePickerRange(id='my_date_picker',
                                     min_date_allowed=datetime(2015,1,1),
@@ -44,18 +44,19 @@ app.layout = html.Div([
                                     start_date = datetime(2018, 1, 1),
                                     end_date = datetime.today())
 
-        ], style={'display':'inline-block'}),
+        ],),
     html.Div([
         html.Button(id='submit-button',
+                    className='button',
                     n_clicks=0,
                     children='Submit',
-                    style={'fontSize':24, 'marginLeft': '30px'})
-    ], style={'display': 'inline-block'}),
+                    )
+    ],)]),
     
     dcc.Graph(id='my_graph',
                 figure={'data':[
                     {'x':[1,2], 'y':[3,1]}
-                ], 'layout':{'title': 'default title'}})       
+                ], 'layout':{'title': ''}})       
 ])
 
 @app.callback(Output('my_graph', 'figure'),
@@ -69,10 +70,14 @@ def update_graph(n_clicks, stock_ticker, start_date, end_date):
     end = datetime.strptime(end_date[:10], '%Y-%m-%d')
     traces = []
     for tic in stock_ticker:
-        df = web.DataReader(tic, 'yahoo', start, end, api_key=QUANDL_API_KEY)
-        traces.append({'x': df.index, 'y': df['Close'], 'name': tic})
+        sql_DF = pd.read_sql_table(tic,
+                                index_col='Date',
+                                con=engine)
+        sql_DF = sql_DF.loc[start:end]
+        traces.append({'x':sql_DF.index, 'y': sql_DF['Close'], 'name': tic})
     fig = {'data': traces,
-            'layout': {'title': stock_ticker}}
+            'layout': {'title':', '.join(stock_ticker)+' Closing Prices'}
+          }
     
     return fig
 
