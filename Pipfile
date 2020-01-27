@@ -7,6 +7,7 @@ verify_ssl = true
 mypy = "*"
 flake8 = "*"
 ipykernel = "*"
+black = "*"
 
 [packages]
 dash = "*"
@@ -14,6 +15,10 @@ sqlalchemy = "*"
 pandas = "*"
 pandas-datareader = "*"
 apache-airflow = "*"
+cryptography = "*"
 
 [requires]
 python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
