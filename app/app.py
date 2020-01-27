@@ -11,17 +11,21 @@ import sqlalchemy
 from datetime import datetime
 import pandas as pd
 from sqlalchemy.types import DateTime
-from utils import get_tickers
+from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
 
 app = dash.Dash(__name__)
 
 engine = sqlalchemy.create_engine("sqlite:///db.sqlite")
-nsdq = pd.read_csv('tickers.csv')
+nsdq = pd.read_csv('nasdaq.csv')
 nsdq.set_index('Symbol', inplace=True)
 options = []
 for tic in nsdq.index:
-    options.append({'label':'{} {}'.format(tic,nsdq.loc[tic]['Name']), 'value':tic})
+    options.append({'label':'{} {}'.format(tic,nsdq.loc[tic]['Security Name']), 'value':tic})
 
+
+# symbols = get_symbols()
+# for symbol in symbols.index:
+#     options.append({'label':'{} {}'.format(symbol,symbols.loc[symbol]['Security Name']), 'value':symbol})
 
 app.layout = html.Div([
     
