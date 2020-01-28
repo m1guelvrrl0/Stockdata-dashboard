@@ -16,6 +16,7 @@ pandas = "*"
 pandas-datareader = "*"
 apache-airflow = "*"
 cryptography = "*"
+uvloop = "*"
 
 [requires]
 python_version = "3.7"
