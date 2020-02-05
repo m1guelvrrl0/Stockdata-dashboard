@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.types import DateTime, FLOAT
 import asyncio
 import uvloop
+import fire
 
 engine = sqlalchemy.create_engine("sqlite:///db.sqlite")
 nsdq = pd.read_csv("nasdaq.csv")
@@ -35,5 +36,9 @@ async def main():
     await asyncio.wait(task, timeout=1)
     return task
 
-uvloop.install()
-task = asyncio.run(main())
+def main():
+    uvloop.install()
+    task = asyncio.run(run_tasks())
+
+if __name__ == "__main__":
+    fire.Fire(main)
