@@ -4,3 +4,5 @@ __pycache__/
 *.py[cod]
 *$py.class
 .csv
+.sqlite
+app/db.sqlite

@@ -3,18 +3,19 @@ import sqlalchemy
 import pandas_datareader.data as web
 from datetime import datetime
 from sqlalchemy.types import DateTime, FLOAT
+from settings import DB_URI, BACKEND
 import fire
 import asyncio
 import uvloop
 
-engine = sqlalchemy.create_engine("sqlite:///db.sqlite")
+engine = sqlalchemy.create_engine(DB_URI)
 nsdq = pd.read_csv("nasdaq.csv")
 nsdq.set_index("Symbol", inplace=True)
 
 
 async def get_stock_data(name):
     try:
-        df = web.DataReader(name, "yahoo", datetime(1970, 1, 1), datetime.today())
+        df = web.DataReader(name, BACKEND, datetime(1970, 1, 1), datetime.today(), api_key=None)
         df.reset_index(inplace=True)
         df.to_sql(
             name,

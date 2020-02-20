@@ -3,11 +3,14 @@ import sqlalchemy
 import pandas_datareader.data as web
 from datetime import datetime, timedelta
 from sqlalchemy.types import DateTime, FLOAT
+from sqlalchemy import create_engine
 import asyncio
 import uvloop
 import fire
 
-engine = sqlalchemy.create_engine("sqlite:///db.sqlite")
+from settings import DB_URI, BACKEND
+
+engine = create_engine(DB_URI)
 nsdq = pd.read_csv("nasdaq.csv")
 nsdq.set_index("Symbol", inplace=True)
 
@@ -16,7 +19,7 @@ async def get_stock_data(name):
     TODAY: DateTime = datetime.today()
     YESTERDAY: DateTime = (datetime.today() - timedelta(days=1))
     try:
-        df = web.DataReader(name, "yahoo", YESTERDAY, TODAY)
+        df = web.DataReader(name, BACKEND, YESTERDAY, TODAY)
         df.reset_index(inplace=True)
         df.to_sql(
             name,

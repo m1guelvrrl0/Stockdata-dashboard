@@ -1,31 +1,23 @@
-# Infrastructure test page.
-import os
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import pandas_datareader.data as web
 from sqlalchemy.types import DateTime, FLOAT
-import sqlite3
-import sqlalchemy
+from sqlalchemy import create_engine
 from datetime import datetime
 import pandas as pd
-from sqlalchemy.types import DateTime
-from pandas_datareader.nasdaq_trader import get_nasdaq_symbols
+from settings import DB_URI
 
 app = dash.Dash(__name__)
 
-engine = sqlalchemy.create_engine("sqlite:///db.sqlite")
+engine = create_engine(DB_URI)
 nsdq = pd.read_csv('nasdaq.csv')
 nsdq.set_index('Symbol', inplace=True)
 options = []
 for tic in nsdq.index:
     options.append({'label':'{} {}'.format(tic,nsdq.loc[tic]['Security Name']), 'value':tic})
 
-
-# symbols = get_symbols()
-# for symbol in symbols.index:
-#     options.append({'label':'{} {}'.format(symbol,symbols.loc[symbol]['Security Name']), 'value':symbol})
 
 app.layout = html.Div([
     

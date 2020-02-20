@@ -14,10 +14,10 @@ dash = "*"
 sqlalchemy = "*"
 pandas = "*"
 pandas-datareader = "*"
-apache-airflow = "*"
 cryptography = "*"
 uvloop = "*"
 fire = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.7"

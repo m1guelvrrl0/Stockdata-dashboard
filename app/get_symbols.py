@@ -6,7 +6,7 @@ import fire
 
 
 def get_symbols(filename: str = "nasdaq.csv"):
-    if not name.endswith('.csv'):
+    if not filename.endswith('.csv'):
         raise Exception('Filename must end with .csv')
     symbols: DataFrame = get_nasdaq_symbols()
     symbols = symbols[['Security Name']]
