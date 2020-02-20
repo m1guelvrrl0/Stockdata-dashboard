@@ -6,4 +6,4 @@ __pycache__/
 .csv
 .sqlite
 app/db.sqlite
-.mypy_cache/3.8
+.mypy_cache/
